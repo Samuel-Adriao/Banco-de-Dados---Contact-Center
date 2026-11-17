@@ -1,6 +1,6 @@
 # Banco de Dados - Contact Center
 
-##CARGO
+## CARGO
 Representa os cargos existentes dentro do contact center. Em vez de cadastrar salário, comissão e função diretamente em cada funcionário, você centraliza essas informações no cargo.
 
 Atributo	                    Função
@@ -12,7 +12,7 @@ porcentagem_comissao	        Percentual de comissão previsto para o cargo, caso
 horas_cargo	                  Carga horária prevista.
 desc_cargo	                  Descrição das responsabilidades do cargo.
 
-##FUNCIONARIO
+## FUNCIONARIO
 Representa as pessoas que trabalham no contact center.
 
 Atributo	                    Função
@@ -32,7 +32,7 @@ id_cargo (FK)	                Identifica o cargo ocupado pelo funcionário.
 
 Relacionamento: CARGO 1:N FUNCIONARIO
 
-##DEVEDOR
+## DEVEDOR
 Representa a pessoa física ou jurídica que possui uma obrigação financeira.
 
 Atributo	                    Função
@@ -49,7 +49,7 @@ cep_devedor	                  CEP.
 tel_devedor	                  Telefone principal.
 email_devedor	                E-mail principal.
 
-##CREDOR
+## CREDOR
 Representa a instituição ou pessoa que possui o direito de receber o valor da dívida.
 
 Atributo	                Função
@@ -81,9 +81,9 @@ cpf_cnpj_devedor (FK)	          Identifica a quem pertence o contato.
 ##CONTATO_ALTERNATIVO_FUNCIONARIO
 Tem exatamente a mesma finalidade, mas para funcionários.
 
-#CONTROLE DAS DÍVIDAS
+# CONTROLE DAS DÍVIDAS
 
-##DIVIDA
+## DIVIDA
 Representa uma obrigação financeira específica entre um devedor e um credor.
 
 Atributo	              Função
@@ -96,7 +96,7 @@ status_divida	          Situação geral da dívida.
 cpf_cnpj_devedor (FK)  	Identifica o devedor.
 cpf_cnpj_credor (FK)	  Identifica o credor.
 
-##ATRIBUICAO_DIVIDA
+## ATRIBUICAO_DIVIDA
 Determina qual funcionário foi ou é responsável por cobrar uma dívida e em qual período de tempo.
 
 Atributo	                  Função
@@ -109,7 +109,7 @@ data_fim_atribuicao         Caso a dívida seja transferida para outra pessoa, e
 id_divida (FK)	            Identifica a dívida atribuída.
 cpf_cnpj_funcionario (FK)	  Identifica o funcionário responsável.
 
-##PARCELA_DIVIDA
+## PARCELA_DIVIDA
 Representa as divisões de uma dívida em vencimentos individuais.
 
 Atributo	                    Função
@@ -126,7 +126,7 @@ id_divida (FK)	              Identifica a dívida à qual a parcela pertence.
 
 Relacionamento: DIVIDA 1:N PARCELA_DIVIDA
 
-##ATENDIMENTO_COBRANCA
+## ATENDIMENTO_COBRANCA
 Representa uma interação entre o contact center e o devedor.
 
 Atributo	                          Função
@@ -141,12 +141,12 @@ obs_atendimento	                    Observações adicionais.
 cpf_cnpj_funcionario (FK)          	Funcionário que realizou o atendimento.
 cpf_cnpj_devedor (FK)	              Devedor que participou do atendimento.
 
-##ATENDIMENTO_DIVIDA
+## ATENDIMENTO_DIVIDA
 Essa tabela é uma entidade associativa. Sua função é relacionar atendimentos com dívidas. O que ela faz é permitir que durante um único atendimento possa-se ser abordado
 várias dívidas diferentes sem que seja criado um novo registro para cada uma dessas dívidas ou limitar um atendimento a tratar de somente uma dívida por vez, sendo necessário enecerrar
 o chamado para iniciar outro a respeito de outra dívida.
 
-##NEGOCIACAO
+# #NEGOCIACAO
 Representa uma negociação realizada entre o contact center e o devedor. Basicamente essa tabela registra possíveis propostas ou acordos entre funcionário e deverdor. 
 
 Atributo	                Função
@@ -160,11 +160,11 @@ obs_negociacao	          Observações adicionais.
 cpf_cnpj_devedor          (FK)	Devedor envolvido.
 cpf_cnpj_funcionario      (FK)	Funcionário responsável pela negociação.
 
-##NEGOCIACAO_DIVIDA
+## NEGOCIACAO_DIVIDA
 Essa tabela tem uma função semelhante à ATENDIMENTO_DIVIDA, mas relaciona negociações com dívidas. Se um funcionário realiza uma negociação envolvendo duas ou mais dívidas, propondo um acordo total, essa tabela
 identifica exatamente quais dívidas foram negociadas. Ou seja, A tabela NEGOCIACAO registra a negociação enquanto a tabela NEGOCIACAO_DIVIDA identifica quais dívidas participaram dela.
 
-##TIPO_PAGAMENTO
+## TIPO_PAGAMENTO
 Tem como objetivo evitar que cada pagamento tenha que armazenar uma descrição textual livre do método utilizado.
 
 Atributo	                  Função
@@ -172,7 +172,7 @@ id_tipo_pagamento (PK)	    Identificador do tipo.
 nome_tipo_pagamento	        Nome, como PIX, CARTÃO, BOLETO.
 descricao_tipo_pagamento	  Explicação do tipo.
 
-##PAGAMENTO
+## PAGAMENTO
 Registra os pagamentos realizados pelo devedor para quitar uma parcela. Deixando claro que pagamento à vista, nada mais é do que um pagamento "dividido" em 1x.
 
 Atributo	Função  
@@ -189,7 +189,7 @@ O relacionamento PARCELA_DIVIDA 1:N PAGAMENTO também permite registrar pagament
 Assim, se um devedor tem uma dívida total de 3.000,00 de 3 parcelas de 1.000,00. Isso será armazenado em DIVIDA e PARCELA_DIVIDA, e caso assim ele queira parcelar essa parcela da dívida em 2x, agora sim
 essa parcela de 1.000,00 será registrada em TIPO_PAGAMENTO e PAGAMENTO.
 
-##HISTORICO_PARCELA
+## HISTORICO_PARCELA
 Essa tabela registra alterações no estado de uma parcela.
 
 Atributo	Função
