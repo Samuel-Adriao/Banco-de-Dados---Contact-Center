@@ -1,23 +1,5 @@
 # Banco de Dados — Contact Center
 
-## Sobre o projeto
-
-Este projeto consiste na modelagem de um banco de dados relacional para um **Contact Center**, contemplando operações de cobrança, controle de dívidas, atendimentos, negociações, pagamentos e histórico de alterações.
-
-A estrutura foi desenvolvida para organizar as informações dos devedores, credores e funcionários, permitindo acompanhar as dívidas desde sua atribuição para cobrança até a quitação ou devolução ao credor.
-
-O projeto também contempla situações em que uma única negociação ou atendimento envolve múltiplas dívidas, utilizando entidades associativas para representar esses relacionamentos.
-
-## Diagrama Entidade-Relacionamento
-
-O diagrama abaixo representa visualmente a estrutura do banco de dados e seus relacionamentos.
-
-![Diagrama Entidade-Relacionamento do Contact Center](contact-center.svg)
-
-> **Arquivo:** `contact-center.svg`
-
----
-
 # 1. ESTRUTURA ORGANIZACIONAL
 
 ## CARGO
