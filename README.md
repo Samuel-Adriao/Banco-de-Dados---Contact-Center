@@ -1,10 +1,28 @@
-# Banco de Dados - Contact Center
+# Banco de Dados — Contact Center
+
+## Sobre o projeto
+
+Este projeto consiste na modelagem de um banco de dados relacional para um **Contact Center**, contemplando operações de cobrança, controle de dívidas, atendimentos, negociações, pagamentos e histórico de alterações.
+
+A estrutura foi desenvolvida para organizar as informações dos devedores, credores e funcionários, permitindo acompanhar as dívidas desde sua atribuição para cobrança até a quitação ou devolução ao credor.
+
+O projeto também contempla situações em que uma única negociação ou atendimento envolve múltiplas dívidas, utilizando entidades associativas para representar esses relacionamentos.
+
+## Diagrama Entidade-Relacionamento
+
+O diagrama abaixo representa visualmente a estrutura do banco de dados e seus relacionamentos.
+
+![Diagrama Entidade-Relacionamento do Contact Center](contact-center.svg)
+
+> **Arquivo:** `contact-center.svg`
+
+---
 
 # 1. ESTRUTURA ORGANIZACIONAL
 
 ## CARGO
 
-Representa os cargos existentes dentro do contact center. Em vez de cadastrar salário, comissão e função diretamente em cada funcionário, você centraliza essas informações no cargo.
+Representa os cargos existentes dentro do Contact Center. Em vez de cadastrar salário, comissão e função diretamente em cada funcionário, essas informações são centralizadas no cargo.
 
 | Atributo | Função |
 |---|---|
@@ -16,9 +34,11 @@ Representa os cargos existentes dentro do contact center. Em vez de cadastrar sa
 | `horas_cargo` | Carga horária prevista. |
 | `desc_cargo` | Descrição das responsabilidades do cargo. |
 
+**Relacionamento:** CARGO 1:N FUNCIONARIO.
+
 ## FUNCIONARIO
 
-Representa as pessoas que trabalham no contact center.
+Representa as pessoas que trabalham no Contact Center.
 
 | Atributo | Função |
 |---|---|
@@ -36,10 +56,6 @@ Representa as pessoas que trabalham no contact center.
 | `email_funcionario` | E-mail principal. |
 | `id_cargo (FK)` | Identifica o cargo ocupado pelo funcionário. |
 
-**Relacionamento:** CARGO 1:N FUNCIONARIO
-
----
-
 ## DEVEDOR
 
 Representa a pessoa física ou jurídica que possui uma obrigação financeira.
@@ -49,7 +65,7 @@ Representa a pessoa física ou jurídica que possui uma obrigação financeira.
 | `cpf_cnpj_devedor (PK)` | Identificador do devedor. |
 | `nome_devedor` | Nome ou razão social. |
 | `data_nascimento_devedor` | Data de nascimento, quando pessoa física. |
-| `logradouro_devedor` | Rua, avenida etc. |
+| `logradouro_devedor` | Rua, avenida ou outro tipo de logradouro. |
 | `numero_devedor` | Número do endereço. |
 | `complemento_devedor` | Complemento. |
 | `bairro_devedor` | Bairro. |
@@ -78,24 +94,24 @@ Representa a instituição ou pessoa que possui o direito de receber o valor da 
 | `email_credor` | E-mail. |
 
 **Relacionamentos:**
-- DEVEDOR 1:N DIVIDA
-- CREDOR 1:N DIVIDA
+- DEVEDOR 1:N DIVIDA.
+- CREDOR 1:N DIVIDA.
 
 ## CONTATO_ALTERNATIVO_DEVEDOR
 
-Armazena outros meios de contato de um devedor.
+Armazena outros meios de contato de um devedor, permitindo cadastrar diferentes telefones, endereços de e-mail ou outros meios de comunicação.
 
 | Atributo | Função |
 |---|---|
-| `id_contato_alt_devedor (PK)` | Identificador do contato. |
-| `tipo_contato` | Informa se é TELEFONE, EMAIL etc. |
+| `id_contato_alt_devedor (PK)` | Identificador do contato alternativo. |
+| `tipo_contato` | Informa se o contato é TELEFONE, EMAIL etc. |
 | `valor_contato` | O número ou endereço de e-mail propriamente dito. |
 | `obs_contato_alternativo` | Observações sobre aquele contato. |
 | `cpf_cnpj_devedor (FK)` | Identifica a quem pertence o contato. |
 
 ## CONTATO_ALTERNATIVO_FUNCIONARIO
 
-Tem exatamente a mesma finalidade, mas para funcionários.
+Tem a mesma finalidade de CONTATO_ALTERNATIVO_DEVEDOR, mas permite armazenar meios de contato alternativos dos funcionários.
 
 ---
 
@@ -108,9 +124,10 @@ Representa uma obrigação financeira específica entre um devedor e um credor.
 | Atributo | Função |
 |---|---|
 | `id_divida (PK)` | Identificador único da dívida. |
+| `titulo_divida` | Identificação do título associado à dívida. |
 | `numero_documento` | Número do documento que originou ou identifica a cobrança. |
 | `valor_original` | Valor inicial da obrigação. |
-| `data_recebimento` | Quando o contact center recebeu a dívida do credor. |
+| `data_recebimento` | Quando o Contact Center recebeu a dívida do credor. |
 | `data_devolucao` | Quando a dívida foi devolvida ao credor. |
 | `status_divida` | Situação geral da dívida. |
 | `cpf_cnpj_devedor (FK)` | Identifica o devedor. |
@@ -127,18 +144,19 @@ Determina qual funcionário foi ou é responsável por cobrar uma dívida e em q
 | `prazo_dias` | Quantidade de dias concedida para recuperação. |
 | `data_limite_recuperacao` | Data final do prazo. |
 | `status_atribuicao` | Situação da atribuição, como ATIVA, CONCLUIDA ou TRANSFERIDA. |
-| `data_fim_atribuicao` | Caso a dívida seja transferida para outra pessoa, esse campo informa o fim do período da atribuição de um funcionário específico. |
+| `data_fim_atribuicao` | Caso a dívida seja transferida para outra pessoa, informa o fim do período da atribuição de um funcionário específico. |
 | `id_divida (FK)` | Identifica a dívida atribuída. |
 | `cpf_cnpj_funcionario (FK)` | Identifica o funcionário responsável. |
 
 ## PARCELA_DIVIDA
 
-Representa as divisões de uma dívida em vencimentos individuais.
+Representa as divisões de uma dívida em vencimentos individuais. Cada parcela possui suas próprias informações financeiras e situação de pagamento.
 
 | Atributo | Função |
 |---|---|
 | `id_parcela_divida (PK)` | Identificador da parcela. |
 | `numero_parcela` | Número sequencial da parcela. |
+| `tipo_parcela` | Identifica se a parcela é ORIGINAL (`O`) ou decorrente de um ACORDO (`A`). |
 | `data_vencimento` | Data em que a parcela deve ser paga. |
 | `valor_original` | Valor original daquela parcela. |
 | `valor_atualizado` | Valor atualizado considerando juros, multas e descontos. |
@@ -148,7 +166,7 @@ Representa as divisões de uma dívida em vencimentos individuais.
 | `valor_desconto` | Valor de desconto concedido. |
 | `id_divida (FK)` | Identifica a dívida à qual a parcela pertence. |
 
-**Relacionamento:** DIVIDA 1:N PARCELA_DIVIDA
+**Relacionamento:** DIVIDA 1:N PARCELA_DIVIDA.
 
 ---
 
@@ -156,7 +174,7 @@ Representa as divisões de uma dívida em vencimentos individuais.
 
 ## ATENDIMENTO_COBRANCA
 
-Representa uma interação entre o contact center e o devedor.
+Representa uma interação entre o Contact Center e o devedor, registrando informações sobre o contato realizado e seu resultado.
 
 | Atributo | Função |
 |---|---|
@@ -175,31 +193,45 @@ Representa uma interação entre o contact center e o devedor.
 
 Essa tabela é uma entidade associativa. Sua função é relacionar atendimentos com dívidas.
 
-O que ela faz é permitir que durante um único atendimento possa-se ser abordado várias dívidas diferentes sem que seja criado um novo registro para cada uma dessas dívidas ou limitar um atendimento a tratar de somente uma dívida por vez, sendo necessário encerrar o chamado para iniciar outro a respeito de outra dívida.
+Ela permite que, durante um único atendimento, sejam abordadas várias dívidas diferentes, sem que seja necessário criar um novo registro de atendimento para cada dívida.
+
+Dessa forma, um atendimento pode estar relacionado a várias dívidas, e uma mesma dívida pode aparecer em diferentes atendimentos ao longo do tempo.
+
+| Atributo | Função |
+|---|---|
+| `id_atendimento_divida (PK)` | Identificador do registro associativo. |
+| `id_atendimento_cobranca (FK)` | Identifica o atendimento relacionado. |
+| `id_divida (FK)` | Identifica a dívida abordada. |
 
 ## NEGOCIACAO
 
-Representa uma negociação realizada entre o contact center e o devedor. Basicamente essa tabela registra possíveis propostas ou acordos entre funcionário e devedor.
+Representa uma negociação realizada entre o Contact Center e o devedor. Essa tabela registra possíveis propostas ou acordos realizados entre funcionário e devedor.
 
 | Atributo | Função |
 |---|---|
 | `id_negociacao (PK)` | Identificador da negociação. |
 | `motivo_negociacao` | Motivo pelo qual a negociação ocorreu. |
 | `data_negociacao` | Data em que foi realizada. |
-| `valor_original` | Valor considerado antes da negociação. **OBS:** se for abordado mais de uma dívida, esse valor será a soma de todas elas. |
-| `valor_negociacao` | Valor proposto ou acordado. **OBS:** aqui também será somado. |
+| `valor_original` | Valor considerado antes da negociação. Se for abordada mais de uma dívida, esse valor será a soma de todas elas. |
+| `valor_negociacao` | Valor proposto ou acordado. Também poderá representar a soma dos valores negociados. |
 | `status_negociacao` | Situação da negociação: PENDENTE, ACEITA, RECUSADA, CANCELADA etc. |
 | `obs_negociacao` | Observações adicionais. |
-| `cpf_cnpj_devedor (FK)` | Devedor envolvido. |
-| `cpf_cnpj_funcionario (FK)` | Funcionário responsável pela negociação. |
+| `cpf_cnpj_devedor (FK)` | Identifica o devedor envolvido. |
+| `cpf_cnpj_funcionario (FK)` | Identifica o funcionário responsável pela negociação. |
 
 ## NEGOCIACAO_DIVIDA
 
 Essa tabela tem uma função semelhante à ATENDIMENTO_DIVIDA, mas relaciona negociações com dívidas.
 
-Se um funcionário realiza uma negociação envolvendo duas ou mais dívidas, propondo um acordo total, essa tabela identifica exatamente quais dívidas foram negociadas.
+Se um funcionário realiza uma negociação envolvendo duas ou mais dívidas, propondo um acordo total, essa tabela identifica exatamente quais dívidas participaram da negociação.
 
-Ou seja, a tabela NEGOCIACAO registra a negociação enquanto a tabela NEGOCIACAO_DIVIDA identifica quais dívidas participaram dela.
+Ou seja, a tabela NEGOCIACAO registra as informações gerais da negociação, enquanto NEGOCIACAO_DIVIDA identifica quais dívidas estão relacionadas a ela.
+
+| Atributo | Função |
+|---|---|
+| `id_negociacao_divida (PK)` | Identificador do registro associativo. |
+| `id_negociacao (FK)` | Identifica a negociação relacionada. |
+| `id_divida (FK)` | Identifica a dívida incluída na negociação. |
 
 ---
 
@@ -207,17 +239,19 @@ Ou seja, a tabela NEGOCIACAO registra a negociação enquanto a tabela NEGOCIACA
 
 ## TIPO_PAGAMENTO
 
-Tem como objetivo evitar que cada pagamento tenha que armazenar uma descrição textual livre do método utilizado.
+Tem como objetivo centralizar os métodos de pagamento disponíveis, evitando que cada registro de pagamento precise armazenar uma descrição textual livre do método utilizado.
 
 | Atributo | Função |
 |---|---|
-| `id_tipo_pagamento (PK)` | Identificador do tipo. |
-| `nome_tipo_pagamento` | Nome, como PIX, CARTÃO, BOLETO. |
-| `descricao_tipo_pagamento` | Explicação do tipo. |
+| `id_tipo_pagamento (PK)` | Identificador do tipo de pagamento. |
+| `nome_tipo_pagamento` | Nome do método, como PIX, CARTÃO ou BOLETO. |
+| `descricao_tipo_pagamento` | Explicação do tipo de pagamento. |
 
 ## PAGAMENTO
 
-Registra os pagamentos realizados pelo devedor para quitar uma parcela. Deixando claro que pagamento à vista, nada mais é do que um pagamento "dividido" em 1x.
+Registra os pagamentos realizados para quitar uma parcela de uma dívida.
+
+O modelo permite registrar pagamentos à vista ou pagamentos parciais de uma parcela, mantendo cada operação individualmente registrada.
 
 | Atributo | Função |
 |---|---|
@@ -230,13 +264,13 @@ Registra os pagamentos realizados pelo devedor para quitar uma parcela. Deixando
 | `id_parcela_divida (FK)` | Parcela da dívida à qual o pagamento se refere. |
 | `id_tipo_pagamento (FK)` | Método de pagamento utilizado. |
 
-**Relacionamento:** PARCELA_DIVIDA 1:N PAGAMENTO
+**Relacionamento:** PARCELA_DIVIDA 1:N PAGAMENTO.
 
-Esse relacionamento também permite registrar pagamentos parciais. Uma parcela de R$ 1.000 pode receber um pagamento de R$ 400 e depois outro de R$ 600.
+Esse relacionamento também permite registrar pagamentos parciais. Por exemplo, uma parcela de R$ 1.000,00 pode receber um pagamento de R$ 400,00 e, posteriormente, outro de R$ 600,00.
 
-Assim, se um devedor tem uma dívida total de R$ 3.000,00, dividida em 3 parcelas de R$ 1.000,00, isso será armazenado em DIVIDA e PARCELA_DIVIDA.
+Assim, se um devedor possui uma dívida total de R$ 3.000,00, dividida em três parcelas de R$ 1.000,00, essas informações são armazenadas em DIVIDA e PARCELA_DIVIDA.
 
-Caso ele queira parcelar essa parcela da dívida de R$ 1.000,00 em 2x, agora sim essa parcela de R$ 1.000,00 será registrada em TIPO_PAGAMENTO e PAGAMENTO.
+Os registros em PAGAMENTO identificam as operações financeiras realizadas para quitar cada parcela, permitindo acompanhar os valores efetivamente pagos.
 
 ---
 
@@ -244,7 +278,7 @@ Caso ele queira parcelar essa parcela da dívida de R$ 1.000,00 em 2x, agora sim
 
 ## HISTORICO_PARCELA
 
-Essa tabela registra alterações no estado de uma parcela.
+Essa tabela registra alterações no estado de uma parcela, permitindo acompanhar seu histórico e identificar quando uma mudança aconteceu.
 
 | Atributo | Função |
 |---|---|
@@ -256,8 +290,9 @@ Essa tabela registra alterações no estado de uma parcela.
 | `id_parcela_divida (FK)` | Parcela que teve seu estado alterado. |
 | `cpf_cnpj_funcionario (FK)` | Funcionário que realizou a alteração, quando aplicável. |
 
-Se durante um atendimento, um devedor pagar a dívida ou parcela da dívida com um funcionário, e esse por sua vez mudar manualmente o status da parcela da dívida de PENDENTE ou ATRASADA para PAGO, essa tabela registra quem e por que fez isso.
+Se, durante um atendimento, um devedor realizar o pagamento de uma dívida ou parcela e o funcionário alterar manualmente o status da parcela de PENDENTE ou ATRASADA para PAGO, essa tabela registra quem realizou a alteração e por qual motivo.
 
-Se simplesmente atualizar `status_parcela` na tabela PARCELA_DIVIDA, o estado anterior seria perdido.
+Se apenas o campo `status_parcela` da tabela PARCELA_DIVIDA fosse atualizado, o estado anterior seria perdido.
 
-Importante dizer que a FK do funcionário aqui pode ser nula, já que isso pode ser feito de forma automática pelo sistema sem intermédio de um funcionário.
+É importante destacar que a chave estrangeira `cpf_cnpj_funcionario` pode ser nula, pois a alteração também pode ser realizada automaticamente pelo sistema, sem a intervenção de um funcionário.
+
